@@ -1,12 +1,15 @@
 { pkgs ? import <nixpkgs> {} }:
-pkgs.mkShell {
-  buildInputs = with pkgs; [
-    python3
-    uv
-    stdenv.cc.cc.lib
-  ];
-
-  shellHook = ''
-    export LD_LIBRARY_PATH="${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH"
-  '';
-}
+let
+  fhs = pkgs.buildFHSEnv {
+    name = "fedml-containment-zone";
+    
+    targetPkgs = pkgs: with pkgs; [
+      python3
+      uv
+      stdenv.cc.cc.lib
+      zlib
+    ];
+    
+    runScript = "fish";
+  };
+in fhs.env
